@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NSO Hyderabad Regional Office</title>
+  <title>Enhanced Image Slider</title>
   <style>
     .slider {
       width: 80%;
       margin: auto;
       overflow: hidden;
+      position: relative;
     }
     .slides {
       display: flex;
@@ -21,13 +22,34 @@
     img {
       width: 100%;
     }
+    .controls {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      transform: translateY(-50%);
+    }
+    .controls button {
+      background: rgba(0, 0, 0, 0.5);
+      color: #fff;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+    }
+    .play-pause {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
   </style>
 </head>
 <body>
 
   <div class="slider">
     <div class="slides">
-      <div class="slide"><img src="image1.jpg" alt="image1"></div>
+      <<div class="slide"><img src="image1.jpg" alt="image1"></div>
       <div class="slide"><img src="image2.jpg" alt="image2"></div>
       <div class="slide"><img src="image3.jpg" alt="image3"></div>
       <div class="slide"><img src="image4.jpg" alt="image4"></div>
@@ -42,22 +64,63 @@
       <div class="slide"><img src="image13.jpg" alt="image13"></div>
       <div class="slide"><img src="image14.jpg" alt="image14"></div>
       <div class="slide"><img src="image15.jpg" alt="image15"></div>
-
       <!-- Repeat for all 20 images -->
     </div>
+    <div class="controls">
+      <button onclick="prevSlide()">&#10094;</button>
+      <button onclick="nextSlide()">&#10095;</button>
+    </div>
+    <button class="play-pause" onclick="togglePlayPause()">&#9658;</button>
   </div>
 
   <script>
     let index = 0;
+    let autoSlideInterval;
+    let isPlaying = true;
     const slides = document.querySelectorAll('.slide');
     const totalSlides = slides.length;
 
-    function showNextSlide() {
-      index = (index + 1) % totalSlides;
+    function showSlide(idx) {
+      index = idx;
       document.querySelector('.slides').style.transform = `translateX(-${index * 100}%)`;
     }
 
-    setInterval(showNextSlide, 2000); // Change image every 2 seconds
+    function nextSlide() {
+      index = (index + 1) % totalSlides;
+      showSlide(index);
+      resetAutoSlide();
+    }
+
+    function prevSlide() {
+      index = (index - 1 + totalSlides) % totalSlides;
+      showSlide(index);
+      resetAutoSlide();
+    }
+
+    function autoSlide() {
+      autoSlideInterval = setInterval(nextSlide, 3000);
+    }
+
+    function resetAutoSlide() {
+      clearInterval(autoSlideInterval);
+      if (isPlaying) {
+        setTimeout(autoSlide, 20000); // Start auto-slide after 20 seconds
+      }
+    }
+
+    function togglePlayPause() {
+      const playPauseButton = document.querySelector('.play-pause');
+      if (isPlaying) {
+        clearInterval(autoSlideInterval);
+        playPauseButton.innerHTML = '&#9658;'; // Play icon
+      } else {
+        autoSlide();
+        playPauseButton.innerHTML = '&#10074;&#10074;'; // Pause icon
+      }
+      isPlaying = !isPlaying;
+    }
+
+    autoSlide(); // Start auto-sliding on load
   </script>
 
 </body>
